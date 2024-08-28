@@ -1,9 +1,16 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import PolygonTable from "./PolygonTable";
-const PolygonTab = () => {
+
+type PolygonTableProps = {
+  polygonCoords: any;
+};
+
+const PolygonTab = (props: PolygonTableProps) => {
+  const { polygonCoords } = props;
+  console.log("🔴polygon tab🔴", polygonCoords);
   return (
     <Box>
-      <PolygonTable />
+      <PolygonTable polygonCoords={polygonCoords} />
     </Box>
   );
 };

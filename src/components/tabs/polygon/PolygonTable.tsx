@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -7,31 +7,73 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TextField,
   IconButton,
+  TextField,
   Button,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close"; // Placeholder, replace with your Figma icon
-import AddIcon from "@mui/icons-material/Add"; // Placeholder, replace with your Figma icon
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const PolygonTable = () => {
-  const [rows, setRows] = useState([{ lat: "", lng: "" }]);
+type PolygonTableProps = {
+  polygonCoords: any[];
+  onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
+  onDeletePolygon?: (index: number) => void;
+};
 
-  const handleAddRow = () => {
-    setRows([...rows, { lat: "", lng: "" }]);
+const PolygonTable = ({
+  polygonCoords,
+  onUpdatePolygon,
+  onDeletePolygon,
+}: PolygonTableProps) => {
+  const [localPolygons, setLocalPolygons] = useState<any[][]>([]);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editedCoords, setEditedCoords] = useState<any[]>([]);
+
+  // Effect to update local state when new props are received
+  useEffect(() => {
+    if (
+      polygonCoords.length > 0 &&
+      polygonCoords.every((coord) => coord.lat && coord.lng)
+    ) {
+      setLocalPolygons((prevPolygons) => [...prevPolygons, polygonCoords]);
+    }
+  }, [polygonCoords]);
+
+  const handleEditClick = (index: number) => {
+    setEditingIndex(index);
+    setEditedCoords([...localPolygons[index]]);
   };
 
-  const handleRemoveRow = (index: any) => {
-    const newRows = rows.filter((_, i) => i !== index);
-    setRows(newRows);
+  const handleSaveClick = (index: number) => {
+    if (onUpdatePolygon) {
+      onUpdatePolygon(index, editedCoords);
+    }
+    const updatedPolygons = [...localPolygons];
+    updatedPolygons[index] = editedCoords;
+    setLocalPolygons(updatedPolygons);
+    setEditingIndex(null);
   };
 
-  const handleChange = (index: any, field: any, value: any) => {
-    const newRows = rows.map((row, i) =>
-      i === index ? { ...row, [field]: value } : row
-    );
-    setRows(newRows);
+  const handleCancelClick = () => {
+    setEditingIndex(null);
+  };
+
+  const handleCoordChange = (
+    coordIndex: number,
+    field: string,
+    value: string
+  ) => {
+    const newCoords = [...editedCoords];
+    newCoords[coordIndex][field] = value;
+    setEditedCoords(newCoords);
+  };
+
+  const handleDeleteClick = (index: number) => {
+    const updatedPolygons = localPolygons.filter((_, i) => i !== index);
+    setLocalPolygons(updatedPolygons);
+    if (onDeletePolygon) {
+      onDeletePolygon(index);
+    }
   };
 
   return (
@@ -39,63 +81,107 @@ const PolygonTable = () => {
       <Table aria-label="polygon table">
         <TableHead>
           <TableRow>
-            <TableCell>Latitude</TableCell>
-            <TableCell>Longitude</TableCell>
-            <TableCell align="right">Actions</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Coordinates</TableCell>
+            <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <TextField
-                  value={row.lat}
-                  onChange={(e) => handleChange(index, "lat", e.target.value)}
-                  placeholder="00.0000"
-                  variant="outlined"
-                  fullWidth
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  value={row.lng}
-                  onChange={(e) => handleChange(index, "lng", e.target.value)}
-                  placeholder="00.0000"
-                  variant="outlined"
-                  fullWidth
-                />
-              </TableCell>
-              <TableCell>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <IconButton>
-                    <MoreVertIcon />
-                  </IconButton>
-                </div>
-              </TableCell>
-              <TableCell align="right">
-                {rows.length > 1 && (
-                  <IconButton onClick={() => handleRemoveRow(index)}>
-                    <CloseIcon /> {/* Replace with your Figma icon */}
-                  </IconButton>
-                )}
+          {localPolygons.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={3} align="center">
+                No polygons available
               </TableCell>
             </TableRow>
-          ))}
-          <TableRow>
-            <TableCell colSpan={3} align="center">
-              <Button
-                startIcon={<AddIcon />} // Replace with your Figma icon
-                onClick={handleAddRow}
-                sx={{
-                  textTransform: "none",
-                  fontWeight: 600,
-                  color: "#7c4dff",
-                }}
-              >
-                Add point
-              </Button>
-            </TableCell>
-          </TableRow>
+          ) : (
+            localPolygons.map((coords, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  {editingIndex === index ? (
+                    <TextField
+                      value={`Polygon ${index + 1}`}
+                      variant="outlined"
+                      fullWidth
+                    />
+                  ) : (
+                    `Polygon ${index + 1}`
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingIndex === index ? (
+                    <>
+                      {editedCoords.map((coord, coordIndex) => (
+                        <div
+                          key={coordIndex}
+                          style={{ display: "flex", gap: 10, marginBottom: 8 }}
+                        >
+                          <TextField
+                            value={coord.lat}
+                            onChange={(e) =>
+                              handleCoordChange(
+                                coordIndex,
+                                "lat",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Latitude"
+                            variant="outlined"
+                          />
+                          <TextField
+                            value={coord.lng}
+                            onChange={(e) =>
+                              handleCoordChange(
+                                coordIndex,
+                                "lng",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Longitude"
+                            variant="outlined"
+                          />
+                        </div>
+                      ))}
+                      <Button
+                        onClick={() =>
+                          setEditedCoords([
+                            ...editedCoords,
+                            { lat: "", lng: "" },
+                          ])
+                        }
+                      >
+                        + Add point
+                      </Button>
+                    </>
+                  ) : (
+                    coords
+                      .map((coord: any) => `(${coord.lat}, ${coord.lng})`)
+                      .join(", ")
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingIndex === index ? (
+                    <>
+                      <IconButton onClick={() => handleSaveClick(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={handleCancelClick}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <IconButton onClick={() => handleEditClick(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteClick(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>

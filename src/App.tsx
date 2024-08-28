@@ -1,5 +1,9 @@
-import React from "react";
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  GoogleMap,
+  useLoadScript,
+  DrawingManager,
+} from "@react-google-maps/api";
 import { styled } from "@mui/material/styles";
 import MainContainer from "./components/mapManagement/mainContainer";
 
@@ -32,14 +36,55 @@ const containerStyle = {
 };
 
 const center = {
-  lat: -3.745,
-  lng: -38.523,
+  lat: 25.7743,
+  lng: -80.1937,
 };
 
 function App() {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyBjrxMT0pJHSZkRb69wxo0g8zmaBzcse4M",
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: "AIzaSyBjrxMT0pJHSZkRb69wxo0g8zmaBzcse4M", // Replace with your API key
+    libraries: ["drawing"], // Ensure the drawing library is loaded
   });
+
+  const [polygonCoords, setPolygonCoords] = useState<any[]>([]);
+  const [drawingManagerOptions, setDrawingManagerOptions] = useState<any>(null);
+
+  useEffect(() => {
+    if (isLoaded && window.google) {
+      setDrawingManagerOptions({
+        drawingControl: true,
+        drawingControlOptions: {
+          drawingModes: [
+            window.google.maps.drawing.OverlayType.POLYGON,
+            window.google.maps.drawing.OverlayType.MARKER,
+          ],
+        },
+        polygonOptions: {
+          fillColor: "#2196F3",
+          fillOpacity: 0.5,
+          strokeWeight: 2,
+          clickable: false,
+          editable: true,
+          zIndex: 1,
+        },
+      });
+    }
+  }, [isLoaded]);
+
+  const onPolygonComplete = useCallback((polygon: any) => {
+    const path = polygon.getPath();
+    const coordinates = [];
+    for (let i = 0; i < path.getLength(); i++) {
+      const latLng = path.getAt(i);
+      coordinates.push({ lat: latLng.lat(), lng: latLng.lng() });
+    }
+    setPolygonCoords(coordinates);
+    console.log("Polygon coordinates:", coordinates);
+  }, []);
+
+  if (loadError) {
+    return <div>Error loading maps</div>;
+  }
 
   return (
     <PageContainer>
@@ -48,14 +93,21 @@ function App() {
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={center}
-            zoom={10}
-          ></GoogleMap>
+            zoom={5}
+          >
+            {drawingManagerOptions && (
+              <DrawingManager
+                onPolygonComplete={onPolygonComplete}
+                options={drawingManagerOptions}
+              />
+            )}
+          </GoogleMap>
         ) : (
           <div>Loading...</div>
         )}
       </MapContainer>
       <RightContainer>
-        <MainContainer />
+        <MainContainer polygonCoords={polygonCoords} />
       </RightContainer>
     </PageContainer>
   );
