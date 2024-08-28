@@ -1,10 +1,26 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import MarkerTable from "./MarkerTable";
 
-const MarkerTab = () => {
+type MarkerTabProps = {
+  markerCoords: any[];
+  onUpdateMarker?: (index: number, updatedCoords: any) => void;
+  onDeleteMarker?: (index: number) => void;
+};
+
+const MarkerTab = ({
+  markerCoords,
+  onUpdateMarker,
+  onDeleteMarker,
+}: MarkerTabProps) => {
   return (
     <Box>
-      <Typography variant="h6">Marker 1</Typography>
+      <MarkerTable
+        markerCoords={markerCoords}
+        onUpdateMarker={onUpdateMarker}
+        onDeleteMarker={onDeleteMarker}
+      />
     </Box>
   );
 };
+
 export default MarkerTab;

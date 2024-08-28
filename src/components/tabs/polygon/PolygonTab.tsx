@@ -3,6 +3,8 @@ import PolygonTable from "./PolygonTable";
 
 type PolygonTableProps = {
   polygonCoords: any;
+  onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
+  onDeletePolygon?: (index: number) => void;
 };
 
 const PolygonTab = (props: PolygonTableProps) => {

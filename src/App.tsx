@@ -47,6 +47,7 @@ function App() {
   });
 
   const [polygonCoords, setPolygonCoords] = useState<any[]>([]);
+  const [markerCoords, setMarkerCoords] = useState<any[]>([]);
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<any>(null);
 
   useEffect(() => {
@@ -82,6 +83,27 @@ function App() {
     console.log("Polygon coordinates:", coordinates);
   }, []);
 
+  const onMarkerComplete = useCallback(
+    (marker: any) => {
+      const position = marker.getPosition();
+      const newCoordinates = { lat: position.lat(), lng: position.lng() };
+
+      // Check if the new coordinates already exist in the markerCoords array
+      const isDuplicate = markerCoords.some(
+        (coord) =>
+          coord.lat === newCoordinates.lat && coord.lng === newCoordinates.lng
+      );
+
+      if (!isDuplicate) {
+        setMarkerCoords((prev) => [...prev, newCoordinates]);
+        console.log("Marker coordinates:", newCoordinates);
+      } else {
+        console.log("Duplicate marker ignored:", newCoordinates);
+      }
+    },
+    [markerCoords]
+  );
+
   if (loadError) {
     return <div>Error loading maps</div>;
   }
@@ -98,6 +120,7 @@ function App() {
             {drawingManagerOptions && (
               <DrawingManager
                 onPolygonComplete={onPolygonComplete}
+                onMarkerComplete={onMarkerComplete}
                 options={drawingManagerOptions}
               />
             )}
@@ -107,7 +130,18 @@ function App() {
         )}
       </MapContainer>
       <RightContainer>
-        <MainContainer polygonCoords={polygonCoords} />
+        <MainContainer
+          polygonCoords={polygonCoords}
+          markerCoords={markerCoords}
+          onUpdatePolygon={(index: any, updatedCoords: any) =>
+            console.log("Update Polygon", index, updatedCoords)
+          }
+          onDeletePolygon={(index: any) => console.log("Delete Polygon", index)}
+          onUpdateMarker={(index: any, updatedCoords: any) =>
+            console.log("Update Marker", index, updatedCoords)
+          }
+          onDeleteMarker={(index: any) => console.log("Delete Marker", index)}
+        />
       </RightContainer>
     </PageContainer>
   );
