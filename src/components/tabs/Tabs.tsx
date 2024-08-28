@@ -49,7 +49,7 @@ const TabsSection = () => {
   const [value, setValue] = useState(0);
   const [mode, setMode] = useState("empty"); // Can be 'empty', 'polygon', or 'marker'
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
     setMode("empty"); // Reset to empty state on tab change
   };

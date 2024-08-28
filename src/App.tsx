@@ -38,23 +38,18 @@ const center = {
 
 function App() {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "YOUR_API_KEY",
+    googleMapsApiKey: "AIzaSyBjrxMT0pJHSZkRb69wxo0g8zmaBzcse4M",
   });
 
   return (
     <PageContainer>
       <MapContainer>
         {isLoaded ? (
-          <iframe
-            title="maps"
-            width="600"
-            height="450"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAPa82ehGACl-2ENqfb1XFj7iCNnD1ISJM
-    &q=Space+Needle,Seattle+WA"
-          ></iframe>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={10}
+          ></GoogleMap>
         ) : (
           <div>Loading...</div>
         )}

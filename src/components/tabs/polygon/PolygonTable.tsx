@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close"; // Placeholder, replace with your Figma icon
 import AddIcon from "@mui/icons-material/Add"; // Placeholder, replace with your Figma icon
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const PolygonTable = () => {
   const [rows, setRows] = useState([{ lat: "", lng: "" }]);
@@ -21,12 +22,12 @@ const PolygonTable = () => {
     setRows([...rows, { lat: "", lng: "" }]);
   };
 
-  const handleRemoveRow = (index) => {
+  const handleRemoveRow = (index: any) => {
     const newRows = rows.filter((_, i) => i !== index);
     setRows(newRows);
   };
 
-  const handleChange = (index, field, value) => {
+  const handleChange = (index: any, field: any, value: any) => {
     const newRows = rows.map((row, i) =>
       i === index ? { ...row, [field]: value } : row
     );
@@ -63,6 +64,13 @@ const PolygonTable = () => {
                   variant="outlined"
                   fullWidth
                 />
+              </TableCell>
+              <TableCell>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <IconButton>
+                    <MoreVertIcon />
+                  </IconButton>
+                </div>
               </TableCell>
               <TableCell align="right">
                 {rows.length > 1 && (

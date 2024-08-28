@@ -41,12 +41,12 @@ const PointInputForm = () => {
     setPoints([...points, { lat: "", lng: "" }]);
   };
 
-  const handleRemovePoint = (index) => {
+  const handleRemovePoint = (index: any) => {
     const newPoints = points.filter((_, i) => i !== index);
     setPoints(newPoints);
   };
 
-  const handleChange = (index, field, value) => {
+  const handleChange = (index: any, field: any, value: any) => {
     const newPoints = points.map((point, i) =>
       i === index ? { ...point, [field]: value } : point
     );
