@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Tabs, Tab, Button, Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import DownloadIcon from "@mui/icons-material/Download"; // Placeholder, use your own icon from Figma
-import MarkerTab from "./MarkerTab";
-import PolygonTab from "./PolygonTab";
+import MarkerTab from "./marker/MarkerTab";
+import PolygonTab from "./polygon/PolygonTab";
 
 const TabsContainer = styled(Box)(({ theme }) => ({
   display: "flex",

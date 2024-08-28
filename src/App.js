@@ -45,13 +45,16 @@ function App() {
     <PageContainer>
       <MapContainer>
         {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-          >
-            {/* Your map components like Markers/Polygons go here */}
-          </GoogleMap>
+          <iframe
+            title="maps"
+            width="600"
+            height="450"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAPa82ehGACl-2ENqfb1XFj7iCNnD1ISJM
+    &q=Space+Needle,Seattle+WA"
+          ></iframe>
         ) : (
           <div>Loading...</div>
         )}
