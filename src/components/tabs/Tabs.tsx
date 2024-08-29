@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import DownloadIcon from "@mui/icons-material/Download";
 import MarkerTab from "./marker/MarkerTab";
 import PolygonTab from "./polygon/PolygonTab";
+
 type TabsSectionProps = {
   onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
   onDeletePolygon?: (index: number) => void;
@@ -38,7 +39,7 @@ const TabsSection = (props: TabsSectionProps) => {
 
   return (
     <>
-      <TabsContainer>
+      <TabsContainer sx={{ paddingLeft: 2 }}>
         <StyledTabs value={value} onChange={handleChange}>
           <Tab label="Polygons management" />
           <Tab label="Markers management" />
