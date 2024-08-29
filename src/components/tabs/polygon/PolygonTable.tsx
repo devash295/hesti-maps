@@ -11,14 +11,26 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
+import { makeStyles } from "@mui/styles";
+import { mainColor } from "../../../App";
 
 type PolygonTableProps = {
   polygonCoords: any[];
   onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
   onDeletePolygon?: (index: number) => void;
 };
+
+const useStyles = makeStyles((theme) => ({
+  outlinedInput: {
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: mainColor,
+      },
+    },
+  },
+}));
 
 const PolygonTable = ({
   polygonCoords,
@@ -28,6 +40,7 @@ const PolygonTable = ({
   const [localPolygons, setLocalPolygons] = useState<any[][]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedCoords, setEditedCoords] = useState<any[]>([]);
+  const classes = useStyles();
 
   // Effect to update local state when new props are received
   useEffect(() => {
@@ -96,15 +109,31 @@ const PolygonTable = ({
           ) : (
             localPolygons.map((coords, index) => (
               <TableRow key={index}>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    borderBottom: "1px solid #EBF0F8",
+                    height: 30,
+                    width: "20%",
+                    borderRadius: 1,
+                    verticalAlign: "top",
+                    paddingTop: "16px",
+                  }}
+                >
                   {editingIndex === index ? (
                     <TextField
                       value={`Polygon ${index + 1}`}
                       variant="outlined"
                       fullWidth
+                      className={classes.outlinedInput}
                     />
                   ) : (
-                    `Polygon ${index + 1}`
+                    <TextField
+                      value={`Polygon ${index + 1}`}
+                      placeholder="Longitude"
+                      variant="outlined"
+                      fullWidth
+                      className={classes.outlinedInput}
+                    />
                   )}
                 </TableCell>
                 <TableCell>
@@ -126,6 +155,7 @@ const PolygonTable = ({
                             }
                             placeholder="Latitude"
                             variant="outlined"
+                            className={classes.outlinedInput}
                           />
                           <TextField
                             value={coord.lng}
@@ -138,6 +168,7 @@ const PolygonTable = ({
                             }
                             placeholder="Longitude"
                             variant="outlined"
+                            className={classes.outlinedInput}
                           />
                         </div>
                       ))}
@@ -148,33 +179,86 @@ const PolygonTable = ({
                             { lat: "", lng: "" },
                           ])
                         }
+                        sx={{
+                          color: mainColor,
+                          size: "18px",
+                          "&:hover": {
+                            borderColor: mainColor,
+                          },
+                        }}
                       >
                         + Add point
                       </Button>
                     </>
                   ) : (
-                    coords
-                      .map((coord: any) => `(${coord.lat}, ${coord.lng})`)
-                      .join(", ")
+                    <TextField
+                      value={coords
+                        .map((coord: any) => `(${coord.lat}, ${coord.lng})`)
+                        .join(", ")}
+                      placeholder="Longitude"
+                      variant="outlined"
+                      fullWidth
+                      className={classes.outlinedInput}
+                    />
                   )}
                 </TableCell>
                 <TableCell>
                   {editingIndex === index ? (
-                    <>
-                      <IconButton onClick={() => handleSaveClick(index)}>
-                        <EditIcon />
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <IconButton
+                        onClick={() => handleSaveClick(index)}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 100,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <CheckIcon />
                       </IconButton>
-                      <IconButton onClick={handleCancelClick}>
-                        <DeleteIcon />
+                      <IconButton
+                        onClick={handleCancelClick}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 100,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <ClearIcon />
                       </IconButton>
-                    </>
+                    </div>
                   ) : (
                     <>
-                      <IconButton onClick={() => handleEditClick(index)}>
-                        <EditIcon />
+                      <IconButton
+                        onClick={() => handleEditClick(index)}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 100,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <CheckIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteClick(index)}>
-                        <DeleteIcon />
+                      <IconButton
+                        onClick={() => handleDeleteClick(index)}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 100,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <ClearIcon />
                       </IconButton>
                     </>
                   )}

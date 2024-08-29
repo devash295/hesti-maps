@@ -11,14 +11,26 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
+import { makeStyles } from "@mui/styles";
+import { mainColor } from "../../../App";
 
 type MarkerTableProps = {
   markerCoords: any[];
   onUpdateMarker?: (index: number, updatedCoords: any) => void;
   onDeleteMarker?: (index: number) => void;
 };
+
+const useStyles = makeStyles((theme) => ({
+  outlinedInput: {
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: mainColor,
+      },
+    },
+  },
+}));
 
 const MarkerTable = ({
   markerCoords,
@@ -28,6 +40,7 @@ const MarkerTable = ({
   const [localMarkers, setLocalMarkers] = useState<any[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedCoord, setEditedCoord] = useState<any>(null);
+  const classes = useStyles();
   useEffect(() => {
     // Only add new markers that do not already exist in localMarkers
     const newMarkers = markerCoords.filter(
@@ -95,15 +108,26 @@ const MarkerTable = ({
           ) : (
             localMarkers.map((coord: any, index: any) => (
               <TableRow key={index}>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    verticalAlign: "top",
+                    paddingTop: "16px",
+                  }}
+                >
                   {editingIndex === index ? (
                     <TextField
                       value={`Marker ${index + 1}`}
                       variant="outlined"
                       fullWidth
+                      className={classes.outlinedInput}
                     />
                   ) : (
-                    `Marker ${index + 1}`
+                    <TextField
+                      value={`Marker ${index + 1}`}
+                      variant="outlined"
+                      fullWidth
+                      className={classes.outlinedInput}
+                    />
                   )}
                 </TableCell>
                 <TableCell>
@@ -116,6 +140,7 @@ const MarkerTable = ({
                         }
                         placeholder="Latitude"
                         variant="outlined"
+                        className={classes.outlinedInput}
                       />
                       <TextField
                         value={editedCoord?.lng || ""}
@@ -124,29 +149,75 @@ const MarkerTable = ({
                         }
                         placeholder="Longitude"
                         variant="outlined"
+                        className={classes.outlinedInput}
                       />
                     </div>
                   ) : (
-                    `(${coord.lat}, ${coord.lng})`
+                    <TextField
+                      value={`(${coord.lat}, ${coord.lng})`}
+                      variant="outlined"
+                      fullWidth
+                      className={classes.outlinedInput}
+                    />
                   )}
                 </TableCell>
                 <TableCell>
                   {editingIndex === index ? (
-                    <>
-                      <IconButton onClick={() => handleSaveClick(index)}>
-                        <EditIcon />
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <IconButton
+                        onClick={() => handleSaveClick(index)}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 10,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <CheckIcon />
                       </IconButton>
-                      <IconButton onClick={handleCancelClick}>
-                        <DeleteIcon />
+                      <IconButton
+                        onClick={handleCancelClick}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 10,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <ClearIcon />
                       </IconButton>
-                    </>
+                    </div>
                   ) : (
                     <>
-                      <IconButton onClick={() => handleEditClick(index)}>
-                        <EditIcon />
+                      <IconButton
+                        onClick={() => handleEditClick(index)}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 10,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <CheckIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteClick(index)}>
-                        <DeleteIcon />
+                      <IconButton
+                        onClick={() => handleDeleteClick(index)}
+                        sx={{
+                          color: mainColor,
+                          borderRadius: 10,
+                          "&:hover": {
+                            backgroundColor: mainColor,
+                            color: "#FFFFFF",
+                          },
+                        }}
+                      >
+                        <ClearIcon />
                       </IconButton>
                     </>
                   )}

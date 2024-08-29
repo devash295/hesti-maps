@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add"; // Placeholder, replace with your Figma icon
 import CloseIcon from "@mui/icons-material/Close"; // Placeholder, replace with your Figma icon
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator"; // Placeholder, replace with your Figma icon
+import { mainColor } from "../../App";
 
 const PointRow = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -80,9 +81,11 @@ const PointInputForm = () => {
         startIcon={<AddIcon />} // Replace with your Figma add icon
         onClick={handleAddPoint}
         sx={{
-          color: "#7c4dff",
-          fontWeight: 600,
-          marginBottom: 2,
+          color: mainColor,
+          size: "18px",
+          "&:hover": {
+            borderColor: mainColor,
+          },
         }}
       >
         Add point

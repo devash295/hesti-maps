@@ -40,6 +40,8 @@ const center = {
   lng: -80.1937,
 };
 
+export const mainColor = "#57167E" 
+
 function App() {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyBjrxMT0pJHSZkRb69wxo0g8zmaBzcse4M", // Replace with your API key
