@@ -9,28 +9,25 @@ import {
   Paper,
   IconButton,
   TextField,
-  Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useMap } from "../../../hook/use-map";
 
 type MarkerTableProps = {
-  markerCoords: any[];
   onUpdateMarker?: (index: number, updatedCoords: any) => void;
   onDeleteMarker?: (index: number) => void;
 };
 
-const MarkerTable = ({
-  markerCoords,
-  onUpdateMarker,
-  onDeleteMarker,
-}: MarkerTableProps) => {
+const MarkerTable = ({ onUpdateMarker, onDeleteMarker }: MarkerTableProps) => {
   const [localMarkers, setLocalMarkers] = useState<any[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedCoord, setEditedCoord] = useState<any>(null);
+  const { markerCoords } = useMap();
+
   useEffect(() => {
     // Only add new markers that do not already exist in localMarkers
-    const newMarkers = markerCoords.filter(
+    const newMarkers = markerCoords?.filter(
       (newMarker) =>
         !localMarkers.some(
           (existingMarker) =>
@@ -39,7 +36,7 @@ const MarkerTable = ({
         )
     );
 
-    if (newMarkers.length > 0) {
+    if (newMarkers && newMarkers?.length > 0) {
       setLocalMarkers((prevMarkers) => [...prevMarkers, ...newMarkers]);
     }
   }, [markerCoords, localMarkers]);
