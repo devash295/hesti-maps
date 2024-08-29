@@ -9,15 +9,14 @@ import {
   Paper,
   IconButton,
   TextField,
-  Button,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
+import { useMap } from "../../../hook/use-map";
 import { makeStyles } from "@mui/styles";
 import { mainColor } from "../../../App";
 
 type MarkerTableProps = {
-  markerCoords: any[];
   onUpdateMarker?: (index: number, updatedCoords: any) => void;
   onDeleteMarker?: (index: number) => void;
 };
@@ -32,18 +31,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MarkerTable = ({
-  markerCoords,
-  onUpdateMarker,
-  onDeleteMarker,
-}: MarkerTableProps) => {
+const MarkerTable = ({ onUpdateMarker, onDeleteMarker }: MarkerTableProps) => {
   const [localMarkers, setLocalMarkers] = useState<any[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedCoord, setEditedCoord] = useState<any>(null);
   const classes = useStyles();
+  const { markerCoords } = useMap();
   useEffect(() => {
     // Only add new markers that do not already exist in localMarkers
-    const newMarkers = markerCoords.filter(
+    const newMarkers = markerCoords?.filter(
       (newMarker) =>
         !localMarkers.some(
           (existingMarker) =>
@@ -52,7 +48,7 @@ const MarkerTable = ({
         )
     );
 
-    if (newMarkers.length > 0) {
+    if (newMarkers && newMarkers?.length > 0) {
       setLocalMarkers((prevMarkers) => [...prevMarkers, ...newMarkers]);
     }
   }, [markerCoords, localMarkers]);

@@ -6,8 +6,6 @@ import MarkerTab from "./marker/MarkerTab";
 import PolygonTab from "./polygon/PolygonTab";
 
 type TabsSectionProps = {
-  polygonCoords: any;
-  markerCoords: any;
   onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
   onDeletePolygon?: (index: number) => void;
   onUpdateMarker?: (index: number, updatedCoords: any) => void;
@@ -29,15 +27,8 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 }));
 
 const TabsSection = (props: TabsSectionProps) => {
-  const {
-    polygonCoords,
-    markerCoords,
-    onUpdatePolygon,
-    onDeletePolygon,
-    onUpdateMarker,
-    onDeleteMarker,
-  } = props;
-  console.log("🔴tabs section🔴", polygonCoords);
+  const { onUpdatePolygon, onDeletePolygon, onUpdateMarker, onDeleteMarker } =
+    props;
   const [value, setValue] = useState(0);
   const [mode, setMode] = useState("polygon");
 
@@ -60,14 +51,12 @@ const TabsSection = (props: TabsSectionProps) => {
       <Box>
         {mode === "polygon" && (
           <PolygonTab
-            polygonCoords={polygonCoords}
             onUpdatePolygon={onUpdatePolygon}
             onDeletePolygon={onDeletePolygon}
           />
         )}
         {mode === "marker" && (
           <MarkerTab
-            markerCoords={markerCoords}
             onUpdateMarker={onUpdateMarker}
             onDeleteMarker={onDeleteMarker}
           />

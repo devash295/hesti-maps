@@ -15,9 +15,9 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { makeStyles } from "@mui/styles";
 import { mainColor } from "../../../App";
+import { useMap } from "../../../hook/use-map";
 
 type PolygonTableProps = {
-  polygonCoords: any[];
   onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
   onDeletePolygon?: (index: number) => void;
 };
@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PolygonTable = ({
-  polygonCoords,
   onUpdatePolygon,
   onDeletePolygon,
 }: PolygonTableProps) => {
@@ -41,13 +40,16 @@ const PolygonTable = ({
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedCoords, setEditedCoords] = useState<any[]>([]);
   const classes = useStyles();
+  const { polygonCoords } = useMap();
 
   // Effect to update local state when new props are received
   useEffect(() => {
     if (
-      polygonCoords.length > 0 &&
-      polygonCoords.every((coord) => coord.lat && coord.lng)
+      polygonCoords &&
+      polygonCoords?.length > 0 &&
+      polygonCoords?.every((coord) => coord.lat && coord.lng)
     ) {
+      debugger;
       setLocalPolygons((prevPolygons) => [...prevPolygons, polygonCoords]);
     }
   }, [polygonCoords]);
