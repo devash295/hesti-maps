@@ -6,6 +6,7 @@ import {
 } from "@react-google-maps/api";
 import { styled } from "@mui/material/styles";
 import MainContainer from "./components/mapManagement/mainContainer";
+import { useMap } from "./hook/use-map";
 
 const PageContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -45,9 +46,7 @@ function App() {
     googleMapsApiKey: "AIzaSyBjrxMT0pJHSZkRb69wxo0g8zmaBzcse4M", // Replace with your API key
     libraries: ["drawing"], // Ensure the drawing library is loaded
   });
-
-  const [polygonCoords, setPolygonCoords] = useState<any[]>([]);
-  const [markerCoords, setMarkerCoords] = useState<any[]>([]);
+  const { setPolygonCoords, markerCoords, setMarkerCoords } = useMap();
   const [drawingManagerOptions, setDrawingManagerOptions] = useState<any>(null);
 
   useEffect(() => {
@@ -79,7 +78,7 @@ function App() {
       const latLng = path.getAt(i);
       coordinates.push({ lat: latLng.lat(), lng: latLng.lng() });
     }
-    setPolygonCoords(coordinates);
+    setPolygonCoords?.(coordinates);
     console.log("Polygon coordinates:", coordinates);
   }, []);
 
@@ -89,13 +88,13 @@ function App() {
       const newCoordinates = { lat: position.lat(), lng: position.lng() };
 
       // Check if the new coordinates already exist in the markerCoords array
-      const isDuplicate = markerCoords.some(
+      const isDuplicate = markerCoords?.some(
         (coord) =>
           coord.lat === newCoordinates.lat && coord.lng === newCoordinates.lng
       );
 
       if (!isDuplicate) {
-        setMarkerCoords((prev) => [...prev, newCoordinates]);
+        setMarkerCoords?.((prev) => [...prev, newCoordinates]);
         console.log("Marker coordinates:", newCoordinates);
       } else {
         console.log("Duplicate marker ignored:", newCoordinates);
@@ -131,8 +130,6 @@ function App() {
       </MapContainer>
       <RightContainer>
         <MainContainer
-          polygonCoords={polygonCoords}
-          markerCoords={markerCoords}
           onUpdatePolygon={(index: any, updatedCoords: any) =>
             console.log("Update Polygon", index, updatedCoords)
           }

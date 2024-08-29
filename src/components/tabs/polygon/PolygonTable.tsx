@@ -13,28 +13,30 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useMap } from "../../../hook/use-map";
 
 type PolygonTableProps = {
-  polygonCoords: any[];
   onUpdatePolygon?: (index: number, updatedCoords: any[]) => void;
   onDeletePolygon?: (index: number) => void;
 };
 
 const PolygonTable = ({
-  polygonCoords,
   onUpdatePolygon,
   onDeletePolygon,
 }: PolygonTableProps) => {
   const [localPolygons, setLocalPolygons] = useState<any[][]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedCoords, setEditedCoords] = useState<any[]>([]);
+  const { polygonCoords } = useMap();
 
   // Effect to update local state when new props are received
   useEffect(() => {
     if (
-      polygonCoords.length > 0 &&
-      polygonCoords.every((coord) => coord.lat && coord.lng)
+      polygonCoords &&
+      polygonCoords?.length > 0 &&
+      polygonCoords?.every((coord) => coord.lat && coord.lng)
     ) {
+      debugger;
       setLocalPolygons((prevPolygons) => [...prevPolygons, polygonCoords]);
     }
   }, [polygonCoords]);
